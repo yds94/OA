@@ -6,7 +6,7 @@ use think\exception\HttpResponseException;
 class Base extends Controller
 {
     protected function _initialize(){
-        //Session::set('uid','ceshisession'); //设置session
+        //Session::set('uid','ceshisession');
         Session::delete('uid');
         $uid = session('uid');
         if($uid == null){
