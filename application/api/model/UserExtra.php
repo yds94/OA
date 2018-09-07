@@ -5,9 +5,10 @@
  * Date: 2018/8/29
  * Time: 14:20
  */
-namespace app\index\model;
+namespace app\api\model;
 use think\Model;
-class User extends Model
+class UserExtra extends Model
 {
+    protected $pk = 'user_id';
 
 }

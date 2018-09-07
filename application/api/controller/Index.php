@@ -1,13 +1,11 @@
 <?php
 namespace app\api\controller;
-use app\api\controller\Base;
+use app\api\controller\Token;
 use think\Session;
-class Index extends Base
+class Index extends Token
 {
     public function index()
     {
-
-        $data = $_POST;
-        return $this->api_suc($data);
+        return $this->api_suc();
     }
 }

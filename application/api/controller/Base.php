@@ -1,22 +1,16 @@
 <?php
 namespace app\api\controller;
 use think\Controller;
-use think\Session;
 use think\exception\HttpResponseException;
 class Base extends Controller
 {
-    protected function _initialize(){
-        //Session::set('uid','ceshisession');
-        Session::delete('uid');
-        $uid = session('uid');
-        if($uid == null){
-          return   $this->api_err('请登录',$_POST);
-        }
-    }
-    protected function api_suc($data = "",$code = 1,$msg = "")
+    protected function api_suc($data = null,$code = 1,$msg = "")
     {
         $code  = (int) $code;
         $msg   = (string) $msg;
+        if (!$data){
+            $data = (object)$data;
+        }
         $result = [
             'code' => $code,
             'msg'  => $msg,
@@ -26,10 +20,13 @@ class Base extends Controller
         throw new HttpResponseException(json($result));
     }
 
-    protected function api_err($msg,$data="",$code = 0)
+    protected function api_err($msg,$data=null,$code = 0)
     {
         $code  = (int) $code;
         $msg   = (string) $msg;
+        if (!$data){
+            $data = (object)$data;
+        }
         $result = [
             'code' => $code,
             'msg'  => $msg,
