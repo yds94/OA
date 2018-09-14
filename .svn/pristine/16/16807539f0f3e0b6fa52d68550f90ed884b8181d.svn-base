@@ -1,0 +1,23 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: yds
+ * Date: 2018/9/11
+ * Time: 11:40
+ */
+namespace app\index\controller;
+use app\index\controller\Base;
+use app\index\model\Userinfo as UserModel;
+use app\index\model\UserExtra as UserExtraModel;
+use app\index\model\Role as RoleModel;
+use think\Session;
+use think\Db;
+use think\Request;
+class Department extends Base
+{
+
+    public function index()
+    {
+
+    }
+}

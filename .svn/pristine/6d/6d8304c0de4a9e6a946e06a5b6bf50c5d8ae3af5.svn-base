@@ -1,0 +1,22 @@
+{include file="public/meta" /}
+	{block name="seo"}
+		标题 关键字 
+	{/block}
+{include file="public/header" /}
+
+{include file="public/menu" /}
+
+
+	{block name="content"}
+		页面主体
+	{/block}
+
+{include file="public/footer" /}
+
+	{block name="js"}
+		用户自定义js
+	{/block}
+
+
+</body>
+</html>

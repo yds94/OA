@@ -1,0 +1,48 @@
+<?php
+namespace app\index\controller;
+use app\index\controller\Base;
+use app\index\model\Userinfo as UserModel;
+use app\index\model\UserExtra as UserExtraModel;
+use app\index\model\Role as RoleModel;
+use think\Session;
+use think\Db;
+use think\Request;
+class User extends Base
+{
+    public function index()
+    {
+        //分页数据
+        $list = Db::table('userinfo')
+            ->alias('a')
+            ->join('user_extra b','a.user_id = b.user_id')
+            ->where('a.is_disable','0')
+            ->paginate(10);
+        //总条数
+        $count = Db::table('userinfo')
+            ->alias('a')
+            ->join('user_extra b','a.user_id = b.user_id')
+            ->where('a.is_disable','0')
+            ->count();
+        //往模版中传入值
+        $this->assign('list',$list);
+        $this->assign('count',$count);
+        $this->assign('title','用户列表');
+
+        return $this->view->fetch();
+    }
+
+    //渲染添加用户模版
+    public function store()
+    {
+        $this->assign('title','添加用户');
+
+        return $this->view->fetch('user_create');
+    }
+
+    //添加用户数据处理
+    public function create(Request $request)
+    {
+        $user_info = $request->param();
+    }
+
+}

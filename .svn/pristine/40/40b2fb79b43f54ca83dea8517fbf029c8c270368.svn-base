@@ -1,0 +1,50 @@
+{include file="public/meta" /}
+<title>部门信息</title>
+</head>
+<body>
+<div class="cl pd-20" style=" background-color:#5bacb6">
+    <img class="avatar size-XL l" src="__STATIC__/static/h-ui/images/user.png">
+    <dl style="margin-left:80px; color:#fff">
+        <dt><span class="f-18">{$user.username}</span> </dt>
+        <dd class="pt-10 f-12" style="margin-left:0">{$user_info.birthday}</dd>
+    </dl>
+</div>
+<div class="pd-20">
+    <table class="table">
+        <tbody>
+        <tr>
+            <th class="text-r" width="100">性别：</th>
+            <td>{$user_info.sex}</td>
+        </tr>
+        <tr>
+            <th class="text-r">手机：</th>
+            <td>{$user_info.phone}</td>
+        </tr>
+        <tr>
+            <th class="text-r">邮箱：</th>
+            <td>{$user_info.email}</td>
+        </tr>
+        <tr>
+            <th class="text-r">部门：</th>
+            <td>{$dept.name}</td>
+        </tr>
+        <tr>
+            <th class="text-r">注册时间：</th>
+            <td>{:date('Y-m-d',$user.create_time)}</td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+{include file="public/footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+
+</script>
+</body>
+</html>

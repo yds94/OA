@@ -1,0 +1,137 @@
+{include file="public/meta" /}
+<title>部门信息</title>
+</head>
+<body>
+<div class="pd-20">
+    <div class="row cl">
+    <div class="formControls col-xs-7 col-sm-7">
+    <form action="/index/department/update" method="post" class="form form-horizontal" id="form-dept-edit">
+        <div class="row cl">
+            <label class="form-label" style="float:left;margin-left: 20px;"><span class="c-red">*</span>分类名称：</label>
+            <div class="formControls col-10">
+                <input type="text" class="input-text" value="{$dep_info.name}" placeholder="" id="user-name" name="name">
+                <input type="hidden" value="{$dep_info.dept_id}" name="dept_id">
+            </div>
+            <div class="col-5"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label" style="float:left;margin-left: 20px;">自定义排序：</label>
+            <div class="formControls col-10">
+                <input type="text" class="input-text" value="{$dep_info.sort}" placeholder="输入整数或者小数" id="user-name" name="sort">
+            </div>
+            <div class="col-5"> </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label" style="float:left;margin-left: 20px;">备注：</label>
+            <div class="formControls col-10">
+                <textarea name="des" cols="" rows="" class="textarea" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,100)">{$dep_info.des}</textarea>
+                <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+            </div>
+            <div class="col-5"> </div>
+        </div>
+        <div class="row cl">
+            <div class="col-9 col-offset-2">
+                <button type="submit" class="btn btn-success radius" id="admin-role-save" name=""><i class="icon-ok"></i> 修改</button>
+                <!--<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">-->
+            </div>
+        </div>
+    </form>
+    </div>
+    <div class="formControls col-xs-5 col-sm-5">
+        <div class="cl pd-5 ">
+            <span class="l">
+                <a class="btn btn-primary radius"  href="/index/department/store?parent_id={$dep_info.dept_id}" >
+                    <i class="Hui-iconfont">&#xe600;</i> 创建子部门
+                </a>
+            </span>
+        </div>
+        {if condition="$dep_info.is_parent == 0"}
+        <div class="cl pd-5 ">
+            <span class="l">
+                <a class="btn btn-primary radius" onclick="dept_config('部门配置','/index/department/set?dept_id={$dep_info.dept_id}','1',700,700)">
+                    <i class="Hui-iconfont">&#xe600;</i> 部门配置
+                </a>
+            </span>
+        </div>
+        {/if}
+        {if condition="$dep_info.is_parent == 0"}
+        <div class="cl pd-5 ">
+            <span class="l">
+                <a class="btn btn-danger radius"  href="javascript:;" onclick="dept_del(this,'{$dep_info.dept_id}')">
+                    <i class="Hui-iconfont">&#xe6e2;</i> 删除当前部门
+                </a>
+            </span>
+        </div>
+        {/if}
+
+    </div>
+</div>
+{include file="public/footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+
+        $("#form-dept-edit").validate({
+            rules:{
+                name:{
+                    required:true,
+                },
+            },
+            onkeyup:false,
+            focusCleanup:true,
+            success:"valid",
+            submitHandler:function(form){
+                $(form).ajaxSubmit({
+                    success: function(data) {
+                        if(data.code == 1){
+                            alert(data.msg);
+                            window.location.reload();
+                            /*var index = parent.layer.getFrameIndex(window.name);
+                            parent.layer.close(index);*/
+
+                        }else{
+                            alert(data.msg);
+                        }
+
+                    }});
+
+            }
+        });
+
+
+
+    });
+    function dept_config(title,url,id,w,h){
+        layer_show(title,url,w,h);
+    }
+
+    function dept_del(obj,id){
+        layer.confirm('角色删除须谨慎，确认要删除吗？',function(index){
+            //此处请求后台程序，下方是成功后的前台处理……
+            $.ajax({
+                url: "/index/department/del",
+                type:'post',
+                data:{dept_id:id},
+                success: function(data){
+                    console.log(data.msg);
+                    window.parent.location.reload();
+                    /*$(obj).parents("tr").remove();
+                    layer.msg('已删除!',{icon:1,time:1000});*/
+
+                }});
+        });
+    }
+</script>
+</body>
+</html>

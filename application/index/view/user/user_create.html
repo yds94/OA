@@ -1,0 +1,176 @@
+{extend name="public/base" /}
+
+{block name="seo"}
+<title>{$title|default="添加权限"}</title>
+<meta name="keywords" content="{$keywords|default='闪贷OA'}">
+<meta name="description" content="{$desc|default='闪贷OA系统'}">
+<link rel="stylesheet" href="__STATIC__/lib/zTree/v3/css/zTreeStyle/zTreeStyle.css" type="text/css">
+</head>
+<body>
+{/block}
+
+{block name="content"}
+<style>
+    .input-text{
+        width:50%;
+    }
+</style>
+<article class="cl pd-20">
+    <form action="" method="post" class="form form-horizontal" id="form-member-add">
+        <div class="formControls col-xs-2 col-sm-2"></div>
+        <div class="formControls col-xs-5 col-sm-5">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户名：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="username" name="username">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>密码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="password" name="password">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>性别：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                <div class="radio-box">
+                    <input name="sex" type="radio" id="sex-1" checked>
+                    <label for="sex-1">男</label>
+                </div>
+                <div class="radio-box">
+                    <input type="radio" id="sex-2" name="sex">
+                    <label for="sex-2">女</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>用户角色：</label>
+            <div class="formControls col-xs-8 col-sm-9 skin-minimal">
+                {volist name="role_info" id="vo"}
+                <div class="radio-box">
+                    <input name="role_id[]" type="checkbox" id="{$vo.role_id}" value="{$vo.role_id}">
+                    <label for="sex-1">{$vo.name}</label>
+                </div>
+                {/volist}
+            </div>
+        </div>
+        </div>
+        <div class="formControls col-xs-5 col-sm-5">
+            <div class="formControls col-xs-12 col-sm-12">
+                选择部门:<span style="color: red;display: none;" id="dept_name"></span><input name="dept_id" type="hidden" id="dept_id" value="">
+                <ul id="treeDemo" class="ztree"></ul>
+            </div>
+            <div class="formControls col-xs-12 col-sm-12" id="attend_conf" style="display: none;">
+
+            </div>
+
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">
+            </div>
+        </div>
+
+    </form>
+</article>
+
+{/block}
+
+{block name="js"}
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/zTree/v3/js/jquery.ztree.all-3.5.min.js"></script>
+<script type="text/javascript">
+    $(function() {
+        $("#form-admin-role-add").validate({
+            rules: {
+                name: {
+                    required: true,
+                },
+                code: {
+                    required: true,
+                },
+                des: {
+                    required: true,
+                },
+            },
+            onkeyup: false,
+            focusCleanup: true,
+            success: "valid",
+            submitHandler: function (form) {
+                $(form).ajaxSubmit({
+                    success: function (data) {
+                        if (data.code == 1) {
+                            alert(data.msg);
+                            window.location.href = "/index/permission/index";
+                        } else{
+                            alert(data.msg);
+                        }
+                    }}
+                );
+            }
+        });
+    });
+
+
+    var setting = {
+        view: {
+            dblClickExpand: false,
+            showLine: false,
+            selectedMulti: false
+        },
+        data: {
+            simpleData: {
+                enable:true,
+                idKey: "id",
+                pIdKey: "pId",
+                rootPId: ""
+            }
+        },
+        callback: {
+            onClick: onClick
+        }
+    };
+
+    var zNodes ={$depart_info};
+
+    var code;
+
+    function showCode(str) {
+        if (!code) code = $("#code");
+        code.empty();
+        code.append("<li>"+str+"</li>");
+    }
+
+    $(document).ready(function(){
+        var t = $("#treeDemo");
+        t = $.fn.zTree.init(t, setting, zNodes);
+        demoIframe = $("#testIframe");
+        demoIframe.bind("load", loadReady);
+        var zTree = $.fn.zTree.getZTreeObj("tree");
+        zTree.selectNode(zTree.getNodeByParam("id",'11'));
+    });
+
+    function onClick() {
+        var treeObj = $.fn.zTree.getZTreeObj("treeDemo");
+        var nodes = treeObj.getSelectedNodes();
+        var nodeId = nodes[0].id;
+        var nodeName = nodes[0].name;
+        alert(nodeId);
+        return true;
+    }
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+{/block}
+
+</body>
+</html>

@@ -1,0 +1,33 @@
+<?php
+namespace app\api\controller;
+use think\Controller;
+use app\api\model\Userinfo as UserModel;
+use app\api\controller\Base;
+class Token extends Base
+{
+    protected $user_id = null;
+    protected function _initialize(){
+        //获取请求头token
+        $token = request()->header('token');
+
+        //判断是否为空
+        if (!$token){
+            return   $this->api_err('请登录');
+        }
+
+        //查询token
+        $map = [
+            'token' => $token,
+        ];
+        $user_info = UserModel::get($map);
+
+        if(!$user_info){
+          return   $this->api_err('用户在其他地方登录,请重新登录','',3);
+
+        }else{
+            $this->user_id = $user_info->user_id;
+        }
+
+    }
+
+}

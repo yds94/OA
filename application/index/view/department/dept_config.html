@@ -1,0 +1,176 @@
+{include file="public/meta" /}
+<title>部门信息</title>
+</head>
+<body>
+<div class="pd-20">
+    <div class="row cl">
+
+        <div class="formControls col-xs-12 col-sm-12">
+            <p><label class="form-label">考勤组配置<span style="display: none;" id="create_but"><a onclick="create_config()" >(添加)</a></span></label></p>
+            <hr/>
+        </div>
+        <div class="formControls col-xs-4 col-sm-4">
+            {if condition="empty($all_info)"}
+            <div class="cl pd-5 ">
+            <span class="l" style="color: red;">
+                请添加考勤组配置
+            </span>
+            </div>
+            {else /}
+            {volist name="all_info" id="vo"}
+            <div class="cl pd-5 ">
+            <span class="l">
+                <a class="btn btn-primary radius"  onclick="edit_config('{$vo.attend_conf_id}')" >
+                    {$vo.name}
+                </a>
+            </span>
+            </div>
+            {/volist}
+            {/if}
+
+        </div>
+        <div class="formControls col-xs-8 col-sm-8">
+            <div id="create_title"><h5 style="margin-left: 30%;">创建考勤组</h5></div>
+            <form action="/index/department/setting" method="post" class="form form-horizontal" id="form-dept-setting">
+                <div class="row cl">
+                    <label class="form-label" style="float:left;margin-left: 20px;"><span class="c-red">*</span>组名：</label>
+                    <div class="formControls col-10">
+                        <input type="text" class="input-text" value="" placeholder="" id="name" name="name" style="width: 50%;">
+                        <input type="hidden" value="{$dept_id}" name="dept_id" id="dept_id">
+                        <input type="hidden" value="" name="attend_conf_id" id="attend_conf_id">
+                    </div>
+                    <div class="col-5"> </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label" style="float:left;margin-left: 20px;"><span class="c-red">*</span>上班时间：</label>
+                    <div class="formControls col-10">
+                        <input type="text" onfocus="WdatePicker({dateFmt:'HH:mm:ss'})" id="working_time" class="input-text Wdate" name="working_time" value="" style="width: 180px;">
+
+                    </div>
+                    <div class="col-5"> </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label" style="float:left;margin-left: 20px;"><span class="c-red">*</span>下班时间：</label>
+                    <div class="formControls col-10">
+                        <input type="text" onfocus="WdatePicker({dateFmt:'HH:mm:ss'})" id="closing_time" class="input-text Wdate" name="closing_time" value="" style="width: 180px;">
+                    </div>
+                    <div class="col-5"> </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label" style="float:left;margin-left: 20px;">描述：</label>
+                    <div class="formControls col-10">
+                        <input type="text" class="input-text" value="" placeholder="" id="remark" name="remark">
+                    </div>
+                    <div class="col-5"> </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label" style="float:left;margin-left: 20px;"><span class="c-red">*</span>wifi控制(标点符号为英文状态)：</label>
+                    <div class="formControls col-10">
+                        <textarea name="wifi_macs" cols="" rows="" id="wifi_macs" class="textarea" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="">[{"name":"wifi名1","mac":"MAC地址1"},{"name":"wifi名2","mac":"MAC地址1"}]</textarea>
+                        <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+                    </div>
+                    <div class="col-5"> </div>
+                </div>
+                <div class="row cl">
+                    <div class="col-9 col-offset-2">
+                        <button type="submit" class="btn btn-success radius" id="admin-role-save" name=""><i class="icon-ok"></i> 提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+    </div>
+    {include file="public/footer" /}
+    <!--请在下方写此页面业务相关的脚本-->
+    <script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+    <script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+    <script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+    <script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+    <script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+    <script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+    <script type="text/javascript">
+        $(function(){
+            $('.skin-minimal input').iCheck({
+                checkboxClass: 'icheckbox-blue',
+                radioClass: 'iradio-blue',
+                increaseArea: '20%'
+            });
+
+            $("#form-dept-setting").validate({
+                rules:{
+                    name:{
+                        required:true,
+                    },
+                    working_time:{
+                        required:true,
+                    },
+                    closing_time:{
+                        required:true,
+                    },
+                    wifi_macs:{
+                        required:true,
+                    },
+                },
+                onkeyup:false,
+                focusCleanup:true,
+                success:"valid",
+                submitHandler:function(form){
+                    $(form).ajaxSubmit({
+                        success: function(data) {
+                            if(data.code == 1){
+                                alert(data.msg);
+                                //window.location.reload();
+                                var index = parent.layer.getFrameIndex(window.name);
+                                 parent.layer.close(index);
+
+                            }else{
+                                alert(data.msg);
+                            }
+
+                        }});
+
+                }
+            });
+
+
+
+        });
+
+        function edit_config(attend_conf_id){
+            $.ajax({
+                url: "/index/department/getconf",
+                type:'post',
+                data:{attend_conf_id:attend_conf_id},
+                success: function(data){
+                    if (data.code == 1){
+                        //console.log(data.msg);
+                        $("#create_title").hide();
+                        $("#create_but").show();
+                        $("#name").attr("value",data.msg.name);
+                        $("#attend_conf_id").attr("value",data.msg.attend_conf_id);
+                        $("#working_time").attr("value",data.msg.working_time);
+                        $("#closing_time").attr("value",data.msg.closing_time);
+                        $("#remark").attr("value",data.msg.remark);
+                        $("#wifi_macs").text(data.msg.wifi_macs);
+
+                    }else{
+                        alert(data.msg);
+                    }
+
+                }});
+        }
+
+        function create_config(){
+            $("#create_title").show();
+            $("#create_but").hide();
+            $("#name").attr("value","");
+            $("#attend_conf_id").attr("value","");
+            $("#working_time").attr("value","");
+            $("#closing_time").attr("value","");
+            $("#remark").attr("value","");
+            $("#wifi_macs").text('[{"name":"wifi名1","mac":"MAC地址1"},{"name":"wifi名2","mac":"MAC地址1"}]');
+        }
+
+    </script>
+</body>
+</html>

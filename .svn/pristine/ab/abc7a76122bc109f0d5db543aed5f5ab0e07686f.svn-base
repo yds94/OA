@@ -1,0 +1,57 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: yds
+ * Date: 2018/9/11
+ * Time: 11:40
+ */
+namespace app\index\controller;
+use app\index\controller\Base;
+use app\index\model\Userinfo as UserModel;
+use app\index\model\UserExtra as UserExtraModel;
+use app\index\model\Department as DepartModel;
+use think\Session;
+use think\Db;
+use think\Request;
+class Department extends Base
+{
+
+    public function index()
+    {
+        $depart_info = Db::table('department')
+            ->field( ['dept_id'=>'id', 'parent_id'=>'pId', 'name'])
+            ->order('sort','desc')
+            ->select();
+        foreach ($depart_info as $k=>$v){
+            if ($v['pId'] == 0){
+                $depart_info[$k]['open'] = true;
+            }
+        }
+
+        /*dump(json_encode($depart_info));
+        die;*/
+
+        $this->assign('depart_info',json_encode($depart_info));
+        return $this->view->fetch();
+    }
+
+    public function store()
+    {
+
+    }
+
+    public function create()
+    {
+
+    }
+
+    public function edit()
+    {
+
+    }
+
+    public function update()
+    {
+
+    }
+}

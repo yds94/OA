@@ -1,0 +1,99 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: yds
+ * Date: 2018/9/10
+ * Time: 14:37
+ * Des: 角色管理
+ */
+namespace app\index\controller;
+use app\index\controller\Base;
+use app\index\model\Userinfo as UserModel;
+use app\index\model\UserExtra as UserExtraModel;
+use app\index\model\Role as RoleModel;
+use app\index\model\RolePermission as RolePermModel;
+use think\Session;
+use think\Db;
+use think\Request;
+class Role extends Base
+{
+    public function index()
+    {
+        $role_info = Db::table('role')->paginate(2);
+        $count = Db::table('role')->count();
+        /*dump($role_info->render());
+        die;*/
+        $this->assign('title','角色列表');
+        $this->assign('role',$role_info);
+        $this->assign('count',$count);
+        return $this->view->fetch();
+    }
+
+    public function store()
+    {
+        $perm_info = Db::table('permission_menu')->select();
+
+        foreach ($perm_info as $value){
+            if ($value['parent_id'] == 0){
+                $perm_arr[] = $value;
+            }
+        }
+
+        foreach ($perm_arr as $key=>$item){
+            foreach ($perm_info as $k=>$v){
+                if ($item['perm_id'] == $v['parent_id']){
+                    $perm_arr[$key]['children'][]= $v;
+                }
+            }
+        }
+        /*dump($perm_arr);
+        die;*/
+        $this->assign('perm_arr',$perm_arr);
+        return $this->view->fetch('role_add');
+    }
+
+    public function create()
+    {
+        $info = request()->param();
+
+        //角色表添加数据
+        $role = new RoleModel();
+        $role->name = $info['name'];
+        $role->code = $info['code'];
+        $role->remark = $info['remark'];
+        $role->save();
+
+        //返回新增角色id
+        $role_id = $role->role_id;
+
+        //角色权限表添加数据,销毁多余的数据
+        unset($info['name']);
+        unset($info['code']);
+        unset($info['remark']);
+
+        //处理数据
+        foreach ($info as $value){
+            $list[] = [
+                'role_id'=>$role_id ,
+                'perm_id'=>$value,
+            ];
+        }
+
+        //角色权限表添加数据
+        $role_perm = new RolePermModel();
+        $res = $role_perm->saveAll($list);
+
+        if ($res){
+            return ['code'=>1];
+        }else{
+            return ['code'=>0];
+        }
+
+    }
+
+    public function edit()
+    {
+
+    }
+
+}

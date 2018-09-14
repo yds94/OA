@@ -1,0 +1,124 @@
+{extend name="public/base" /}
+
+{block name="seo"}
+<title>{$title|default="添加权限"}</title>
+<meta name="keywords" content="{$keywords|default='闪贷OA'}">
+<meta name="description" content="{$desc|default='闪贷OA系统'}">
+</head>
+<body>
+{/block}
+
+{block name="content"}
+<style>
+    .input-text{
+        width:50%;
+    }
+</style>
+<article class="cl pd-20">
+    <form action="/index/permission/create" method="post" class="form form-horizontal" id="form-admin-role-add">
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限名称：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="name" name="name" datatype="*4-16" nullmsg="用户账户不能为空">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限码：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="code" name="code" datatype="*4-16" nullmsg="用户账户不能为空">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3"><span class="c-red">*</span>权限描述：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="des" name="des" datatype="*4-16" nullmsg="用户账户不能为空">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">页面链接：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <input type="text" class="input-text" value="" placeholder="" id="page_url" name="page_url">
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">是否为主菜单：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <div class="radio-box">
+                    <input type="radio" id="radio-0" name="is_menu" value="0" checked>
+                    <label for="radio-0">否</label>
+                </div>
+                <div class="radio-box">
+                    <input type="radio" id="radio-1" name="is_menu" value="1">
+                    <label for="radio-1">是</label>
+                </div>
+            </div>
+        </div>
+        <div class="row cl">
+            <label class="form-label col-xs-4 col-sm-3">所属对象：</label>
+            <div class="formControls col-xs-8 col-sm-9">
+                <span class="select-box"  style="width: 10%">
+                    <select name="parent_id" class="select">
+                        {volist name="perm_menu_parent" id="vo"}
+                            <option value="{$vo.perm_id}">{$vo.name}</option>
+                        {/volist}
+                    </select>
+				</span>
+            </div>
+        </div>
+        <div class="row cl">
+            <div class="col-xs-8 col-sm-9 col-xs-offset-4 col-sm-offset-3">
+                <button type="submit" class="btn btn-success radius" id="admin-role-save" name=""><i class="icon-ok"></i> 确定</button>
+            </div>
+        </div>
+    </form>
+</article>
+
+{/block}
+
+{block name="js"}
+<script type="text/javascript" src="__STATIC__/lib/My97DatePicker/4.8/WdatePicker.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/datatables/1.10.0/jquery.dataTables.min.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/laypage/1.2/laypage.js"></script>
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+$(function() {
+    $("#form-admin-role-add").validate({
+        rules: {
+            name: {
+                required: true,
+            },
+            code: {
+                required: true,
+            },
+            des: {
+                required: true,
+            },
+        },
+        onkeyup: false,
+        focusCleanup: true,
+        success: "valid",
+        submitHandler: function (form) {
+            $(form).ajaxSubmit({
+                success: function (data) {
+                    if (data.code == 1) {
+                        alert(data.msg);
+                        window.location.href = "/index/permission/index";
+                    } else{
+                        alert(data.msg);
+                    }
+
+                }}
+            );
+
+        }
+    });
+});
+</script>
+<!--/请在上方写此页面业务相关的脚本-->
+{/block}
+
+</body>
+</html>

@@ -1,0 +1,84 @@
+{include file="public/meta" /}
+<title>部门信息</title>
+</head>
+<body>
+<div class="pd-20">
+    <div class="row cl">
+        <div class="formControls col-xs-12 col-sm-12">
+            {if condition="$parent_id == 0"}
+            您当前正在创建顶级部门
+            {else /}
+            您当前正在为--{$dep_info.name}--创建子部门
+            {/if}
+        </div>
+        <div class="formControls col-xs-7 col-sm-7">
+            <form action="/index/department/create" method="post" class="form form-horizontal" id="form-dept-edit">
+                <div class="row cl">
+                    <label class="form-label" style="float:left;margin-left: 20px;"><span class="c-red">*</span>分类名称：</label>
+                    <div class="formControls col-10">
+                        <input type="text" class="input-text" value="" placeholder="" id="user-name" name="name">
+                        <input type="hidden" value="{$parent_id}" name="parent_id">
+                    </div>
+                    <div class="col-5"> </div>
+                </div>
+                <div class="row cl">
+                    <label class="form-label" style="float:left;margin-left: 20px;">备注：</label>
+                    <div class="formControls col-10">
+                        <textarea name="des" cols="" rows="" class="textarea" datatype="*10-100" dragonfly="true" nullmsg="备注不能为空！" onKeyUp="textarealength(this,100)"></textarea>
+                        <p class="textarea-numberbar"><em class="textarea-length">0</em>/100</p>
+                    </div>
+                    <div class="col-5"> </div>
+                </div>
+                <div class="row cl">
+                    <div class="col-9 col-offset-2">
+                        <!--<input class="btn btn-primary radius" type="submit" value="&nbsp;&nbsp;提交&nbsp;&nbsp;">-->
+                        <button type="submit" class="btn btn-success radius" id="admin-role-save" name=""><i class="icon-ok"></i> 提交</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="formControls col-xs-5 col-sm-5"></div>
+    </div>
+</div>
+{include file="public/footer" /}
+<!--请在下方写此页面业务相关的脚本-->
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/jquery.validate.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/validate-methods.js"></script>
+<script type="text/javascript" src="__STATIC__/lib/jquery.validation/1.14.0/messages_zh.js"></script>
+<script type="text/javascript">
+    $(function(){
+        $('.skin-minimal input').iCheck({
+            checkboxClass: 'icheckbox-blue',
+            radioClass: 'iradio-blue',
+            increaseArea: '20%'
+        });
+        $("#form-dept-edit").validate({
+            rules:{
+                name:{
+                    required:true,
+                },
+            },
+            onkeyup:false,
+            focusCleanup:true,
+            success:"valid",
+            submitHandler:function(form){
+                $(form).ajaxSubmit({
+                    success: function(data) {
+                        if(data.code == 1){
+                            alert(data.msg);
+                            window.parent.location.reload();
+                            /*var index = parent.layer.getFrameIndex(window.name);
+                             parent.layer.close(index);*/
+                        }else{
+                            alert(data.msg);
+                        }
+
+                    }});
+
+            }
+        });
+
+    });
+</script>
+</body>
+</html>
