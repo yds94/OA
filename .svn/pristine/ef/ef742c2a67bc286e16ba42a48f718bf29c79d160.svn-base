@@ -32,8 +32,4 @@ class AttendanceConfig extends Model
     {
         return date('H:i:s',$value);
     }*/
-    public function getWifiMacsAttr($value)
-    {
-        return json_decode($value,true);
-    }
 }

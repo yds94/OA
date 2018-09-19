@@ -9,7 +9,6 @@ use app\api\controller\Base;
 class Token extends Base
 {
     protected $user_id = null;
-    protected $user_info = null;
     protected function _initialize(){
         //获取请求头token
         $token = request()->header('token');
@@ -30,7 +29,6 @@ class Token extends Base
 
         }else{
             $this->user_id = $user_info->user_id;
-            $this->user_info = $user_info;
         }
 
     }

@@ -79,4 +79,9 @@ class Login extends Base
 
         return $user_new_info;
     }
+
+    public function test()
+    {
+        return $this->api_suc('测试成功!');
+    }
 }

@@ -1,0 +1,58 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: yds
+ * Date: 2018/9/17
+ * Time: 16:16
+ */
+namespace app\api\controller;
+use app\api\controller\Token;
+use app\api\model\AttendanceConfig;
+use app\api\model\AttendanceRecord;
+use app\api\model\Userinfo as UserModel;
+use app\api\model\AttendanceConfig as AttendConfModel;
+use app\api\model\AttendanceRecord as AttendRecordModel;
+class Department extends Token
+{
+    public function getMemberList()
+    {
+        $dept_id = request()->param('dept_id');
+
+        if ($dept_id){
+            $map = [
+                'dept_id'=>$dept_id,
+            ];
+
+            $users = UserModel::all($map);
+
+            foreach ($users as $user) {
+
+                $res[] = $this->get_user_info($user['user_id']);
+
+            }
+
+        }else{
+            $users = UserModel::all();
+            foreach ($users as $user) {
+
+                $res[] = $this->get_user_info($user['user_id']);
+
+            }
+        }
+
+        if ($users){
+            return $this->api_suc($res);
+        }else{
+            return $this->api_err('无任何成员!');
+        }
+
+    }
+
+    public function index()
+    {
+
+    }
+
+
+
+}

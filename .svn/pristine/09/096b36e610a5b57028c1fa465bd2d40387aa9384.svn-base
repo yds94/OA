@@ -1,0 +1,132 @@
+<?php
+/**
+ * Created by PhpStorm.
+ * User: yds
+ * Date: 2018/9/17
+ * Time: 14:46
+ */
+namespace app\api\controller;
+use app\api\controller\Token;
+use app\api\model\AttendanceConfig;
+use app\api\model\AttendancePlan;
+use app\api\model\AttendanceRecord;
+use app\api\model\Userinfo as UserModel;
+use app\api\model\UserExtra as UserExtraModel;
+use app\api\model\AttendanceConfig as AttendConfModel;
+use app\api\model\AttendanceRecord as AttendRecordModel;
+use think\Db;
+
+class Attendance extends Token
+{
+    public function getConf()
+    {
+        $attend_conf_id = request()->param('attend_conf_id');
+
+        $atten = AttendConfModel::get($attend_conf_id);
+
+        $user = UserModel::all(['attend_conf_id'=>$attend_conf_id]);
+
+        $atten['user'] = $user;
+        if ($atten){
+            return $this->api_suc($atten);
+        }else{
+            return $this->api_err('未找到配置');
+        }
+
+    }
+
+    public function confDel()
+    {
+        $attend_conf_id = request()->param('attend_conf_id');
+
+        $user = new UserModel();
+
+        $user->save(['attend_conf_id' => '0'],['attend_conf_id' => $attend_conf_id]);
+
+        $res = AttendConfModel::where('attend_conf_id','=',$attend_conf_id)->delete();
+
+        if ($res){
+            return $this->api_suc('删除成功!');
+        }else{
+            return $this->api_err('删除失败');
+        }
+    }
+
+    public function getAttendRecord()
+    {
+        $dateday = request()->param('date');
+
+        $map = [
+            'user_id'=>$this->user_id,
+            'date'=>$dateday
+        ];
+
+        $attendRecordObj = AttendRecordModel::get($map);
+
+        if ($attendRecordObj){
+
+            $attendRecord = json_decode(json_encode($attendRecordObj),true);
+
+            $user = UserModel::get($this->user_id);
+
+            $attendConf = AttendConfModel::get($user->attend_conf_id);
+
+            $attendRecord['working_time_conf'] = $attendConf->working_time;
+            $attendRecord['closing_time_conf'] = $attendConf->closing_time;
+            $attendRecord['wifi_macs'] = $attendConf->wifi_macs;
+            $attendRecord['current_time'] = time();
+
+            return $this->api_suc($attendRecord);
+        }else{
+            return $this->api_err('无考勤记录');
+        }
+
+    }
+
+    public function getAttendPlan()
+    {
+        $attend_conf_id = request()->param('attend_conf_id');
+        $current_year_month = request()->param('current_year_month');
+
+        $attend_conf = AttendConfModel::get($attend_conf_id);
+
+        /*$users = UserModel::all(['attend_conf_id'=>$attend_conf_id]);
+
+        foreach ($users as $user){
+            $map = [
+                'user_id'=>$user['user_id'],
+                'current_year_month'=>$current_year_month,
+            ];
+
+            $plan = AttendancePlan::get($map);
+            $user_extra = UserExtraModel::get($user['user_id']);
+
+            $attendancePlan['planDetails'] = $plan['plan_month_detail'];
+            $attendancePlan['plan_id'] = $plan['plan_id'];
+            $attendancePlan['current_year_month'] = $plan['current_year_month'];
+            $attendancePlan['user_id'] = $user['user_id'];
+            $attendancePlan['realname'] = $user_extra->realname;
+
+            $attendancePlans[] = $attendancePlan;
+        }*/
+        $attendancePlans = Db::table('userinfo')
+            ->alias('a')
+            ->join('user_extra b', 'a.user_id = b.user_id','LEFT')
+            ->join('attendance_plan c','a.user_id = c.user_id','LEFT')
+            ->field('a.user_id,b.realname,c.plan_id,c.current_year_month,c.plan_month_detail')
+            ->where('a.attend_conf_id','=',$attend_conf_id)
+            ->where('c.current_year_month','=',$current_year_month)
+            ->select();
+
+        foreach ($attendancePlans as $key=>$v){
+            $attendancePlans[$key]['planDetails'] = json_decode($v['plan_month_detail'],true);
+
+            unset( $attendancePlans[$key]['plan_month_detail']);
+        }
+
+        $res['attendancePlans'] = $attendancePlans;
+        $res['attendanceConfig'] = $attend_conf;
+
+        return $this->api_suc($res);
+    }
+}
