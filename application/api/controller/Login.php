@@ -65,7 +65,8 @@ class Login extends Base
 
         $user_extra_info = $user->getuserinfo->getData();
 
-        $user_dept_info = $user->getuserdep->getData();
+        //$user_dept_info = $user->getuserdep->getData();
+        $user_dept_info = $user->getuserdep;
 
         $user_info = $user->getData();
 
