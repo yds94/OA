@@ -22,6 +22,6 @@ class Userinfo extends Model
 
     public function getuserdep()
     {
-        return $this->hasOne('Department','dept_id','user_id');
+        return $this->hasOne('Department','dept_id','dept_id');
     }
 }
