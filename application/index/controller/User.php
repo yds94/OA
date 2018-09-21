@@ -56,6 +56,7 @@ class User extends Base
         $this->assign('title', '用户列表');
         $this->assign('keywords',$keywords);
         $this->assign('is_disable',$is_disable);
+        $this->assign('active_menu','yonghuguanli.yonghuliebiao');
 
 
         return $this->view->fetch();
@@ -80,6 +81,7 @@ class User extends Base
         $this->assign('depart_info',json_encode($depart_info));
         $this->assign('role_info', $role_info);
         $this->assign('title', '添加用户');
+        $this->assign('active_menu','yonghuguanli.tianjiayonghu');
 
         return $this->view->fetch('user_create');
     }

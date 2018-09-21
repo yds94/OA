@@ -36,6 +36,7 @@ class Permission extends Base
         $this->assign('keywords',$keywords);
         $this->assign('permission_menu',$permission_menu);
         $this->assign('count',$count);
+        $this->assign('active_menu','quanxianguanli.quanxianliebiao');
 
         return $this->view->fetch();
     }
@@ -47,6 +48,7 @@ class Permission extends Base
         //dump($perm_menu_parent);die;
         $this->assign('title','添加权限');
         $this->assign('perm_menu_parent',$perm_menu_parent);
+        $this->assign('active_menu','quanxianguanli.tianjiaquanxian');
         return $this->view->fetch('perm_add');
     }
 

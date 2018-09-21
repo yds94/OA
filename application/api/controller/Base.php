@@ -28,9 +28,9 @@ class Base extends Controller
     {
         $code  = (int) $code;
         $msg   = (string) $msg;
-        if (!$data){
+        /*if (!$data){
             $data = (object)$data;
-        }
+        }*/
         $result = [
             'code' => $code,
             'msg'  => $msg,

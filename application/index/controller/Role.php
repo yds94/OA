@@ -24,6 +24,7 @@ class Role extends Base
         $this->assign('title','角色列表');
         $this->assign('role',$role_info);
         $this->assign('count',$count);
+        $this->assign('active_menu','jueseguanli.jueseliebiao');
         return $this->view->fetch();
     }
 
@@ -32,6 +33,7 @@ class Role extends Base
         $perm_arr = $this->getAllPerm();
 
         $this->assign('perm_arr',$perm_arr);
+        $this->assign('active_menu','jueseguanli.tianjiajuese');
         return $this->view->fetch('role_add');
     }
 

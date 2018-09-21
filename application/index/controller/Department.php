@@ -28,6 +28,7 @@ class Department extends Base
             }
         }
 
+        $this->assign('active_menu','bumenguanli.bumenliebiao');
         $this->assign('depart_info',json_encode($depart_info));
         return $this->view->fetch();
     }

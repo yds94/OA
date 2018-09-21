@@ -12,6 +12,7 @@ use app\api\model\AttendanceRecord;
 use app\api\model\Userinfo as UserModel;
 use app\api\model\AttendanceConfig as AttendConfModel;
 use app\api\model\AttendanceRecord as AttendRecordModel;
+use think\Db;
 class Department extends Token
 {
     public function getMemberList()
@@ -54,10 +55,19 @@ class Department extends Token
 
         $attend_conf = AttendConfModel::all(['dept_id'=>$user_info['dept_id']]);
 
+
         if ($attend_conf){
+
+            foreach ($attend_conf as $k=>$v){
+
+                $count = Db::table('userinfo')->where('attend_conf_id','=',$v['attend_conf_id'])->count();
+
+                $attend_conf[$k]['memberCount'] = $count;
+            }
+
             return $this->api_suc($attend_conf);
         }else{
-            return $this->api_err('当前部门无上班时间配置');
+            return $this->api_err('当前部门无上班时间配置',[],1);
         }
 
     }
@@ -123,6 +133,10 @@ class Department extends Token
             $attend_conf->allowField(true)->save($conf_data,['attend_conf_id' => $attend_conf_id]);
             $res = $attend_conf->getData();
 
+            $user = new UserModel();
+            //先把所有的配置id置0,再更新选择的用户id
+            $user->where('attend_conf_id', $attend_conf_id)->update(['attend_conf_id' => '0']);
+
             //判断是否传入user_ids
             if ($user_ids){
                 //处理传入的数据
@@ -135,9 +149,6 @@ class Department extends Token
                     ];
                 }
 
-                $user = new UserModel();
-                //先把所有的配置id置0,再更新选择的用户id
-                $user->where('attend_conf_id', $attend_conf_id)->update(['attend_conf_id' => '0']);
                 $user_update = $user->isUpdate()->saveAll($user_data);
 
                 if(!$user_update){

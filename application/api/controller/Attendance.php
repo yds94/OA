@@ -33,9 +33,16 @@ class Attendance extends Token
 
         $atten = AttendConfModel::get($attend_conf_id);
 
-        $user = UserModel::all(['attend_conf_id'=>$attend_conf_id]);
+        /*$user = UserModel::all(['attend_conf_id'=>$attend_conf_id]);
 
-        $atten['user'] = $user;
+        $atten['users'] = $user;*/
+        $users = Db::table('userinfo')
+            ->alias('a')
+            ->join('user_extra b','a.user_id = b.user_id')
+            ->field('a.user_id,a.attend_conf_id,a.dept_id,a.username,b.realname')
+            ->where('a.attend_conf_id','=',$attend_conf_id)
+            ->select();
+        $atten['users'] = $users;
         if ($atten){
             return $this->api_suc($atten);
         }else{

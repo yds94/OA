@@ -4,11 +4,11 @@
 	<div class="menu_dropdown bk_2">
 		{foreach name=":session('menu_user_id')" item="val" key="key"}
 		<dl id="{$key}">
-			<dt>{$val['name']}<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
-			<dd>
+			<dt {if condition="(isset($active_menu) && (0 === strpos($active_menu, $key)))"} class="selected"{/if}>{$val['name']}<i class="Hui-iconfont menu_dropdown-arrow">&#xe6d5;</i></dt>
+			<dd {if condition="(isset($active_menu) && (0 === strpos($active_menu, $key)))"} style="display: block;"{/if}>
 				<ul>
 					{foreach name="val['children']" item="v" key="k"}
-					<li><a href="{$v.page_url}">{$v.name}</a></li>
+					<li {if condition="(isset($active_menu) && ($active_menu === $key.'.'.$k))"} class='current' {/if}><a href="{$v.page_url}">{$v.name}</a></li>
 					{/foreach}
 				</ul>
 			</dd>
